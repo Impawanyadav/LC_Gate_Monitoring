@@ -1,12 +1,12 @@
 # LC Gate Monitoring
 
-A real-time, distributed edge-computing dashboard for monitoring live physical gates and traffic nodes. Built with a decoupled data ingestion architecture and zero-trust hardware synchronization.
+A real-time, distributed edge-computing dashboard for monitoring live physical LC gates. Built with a decoupled data ingestion architecture and zero-trust hardware synchronization.
 
 ## 🏗️ Architecture Overview
 
 This system is designed for **infinite scalability** and **fault tolerance** using a Hybrid Edge-Computing model:
 
-*   **Real-Time Event Streaming:** Uses WebSockets (STOMP/SockJS) to push live state changes to the UI without HTTP polling, ensuring millisecond-level responsiveness.
+*   **Real-Time Event Streaming:** Uses WebSockets (STOMP/SockJS) to push live status changes of LC gates to the UI without HTTP polling, ensuring millisecond-level responsiveness.
 *   **Edge Computing Engine:** Heavy mathematical calculations (cycle durations, modulo sequences, elapsed times) are offloaded to the client's browser. This results in near-zero backend CPU load, allowing the system to scale to thousands of concurrent viewers effortlessly.
 *   **Hybrid Time-Sync (Zero-Trust):** Solves the standard Edge Computing flaw (local clock drift) by anchoring the frontend JavaScript engine to the backend server's atomic clock timestamp. Hardware anomalies (like drifting IoT device clocks sending "future" timestamps) are gracefully caught and mitigated by the software.
 *   **Decoupled Data Ingestion:** Utilizes a Google Sheet CSV export as a highly accessible data layer, allowing non-technical operators to update configurations without developer intervention or redeployment.
