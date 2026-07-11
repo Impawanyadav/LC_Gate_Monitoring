@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Dashboard - Live Monitoring</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link href="/style.css?v=2" rel="stylesheet">
+</head>
+<body>
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <h2 class="mb-3 mb-md-0">Live LC Gate Monitoring</h2>
+        <form action="/logout" method="POST">
+            <button type="submit" class="btn btn-outline-danger shadow-sm">Logout</button>
+        </form>
+    </div>
+
+    <div class="row justify-content-center g-3 mb-4">
+        <div class="col-6 col-md-4 col-lg">
+            <div class="status-card bg-open h-100" id="card-111">
+                <h5>Gate 111</h5>
+                <h4 id="status-111">LOAD...</h4>
+                <small id="time-111" class="d-block mt-2">--</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
+            <div class="status-card bg-open h-100" id="card-114">
+                <h5>Gate 114</h5>
+                <h4 id="status-114">LOAD...</h4>
+                <small id="time-114" class="d-block mt-2">--</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
+            <div class="status-card bg-open h-100" id="card-115">
+                <h5>Gate 115</h5>
+                <h4 id="status-115">LOAD...</h4>
+                <small id="time-115" class="d-block mt-2">--</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
+            <div class="status-card bg-open h-100" id="card-193">
+                <h5>Gate 193</h5>
+                <h4 id="status-193">LOAD...</h4>
+                <small id="time-193" class="d-block mt-2">--</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
+            <div class="status-card bg-open h-100" id="card-194">
+                <h5>Gate 194</h5>
+                <h4 id="status-194">LOAD...</h4>
+                <small id="time-194" class="d-block mt-2">--</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <h4 class="mb-3">All Gate Logs</h4>
+        <div class="table-wrapper">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark sticky-top">
+                    <tr>
+                        <th>LC Gate</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody id="master-log-table">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    
+    <script src="/js/app.js?v=3"></script>
+</body>
+</html>
