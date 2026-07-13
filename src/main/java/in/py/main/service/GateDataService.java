@@ -26,7 +26,7 @@ public class GateDataService {
     private final SimpMessagingTemplate messagingTemplate;
     
    
-    private Map<String, GateLog> latestGateStates = new HashMap<>();
+    private Map<String, Object> lastBroadcastedPayload = new HashMap<>();
 
     @PostConstruct
     public void loadDataOnStartup() {
@@ -53,9 +53,7 @@ public class GateDataService {
                     if (gateId.matches("\\d+")) {
                         GateLog logEntry = new GateLog(gateId, columns[1].trim(), columns[2].trim(), columns[3].trim());
                         
-                       
                         currentStates.put(gateId, logEntry);
-                        
                         
                         rollingLogs.add(logEntry);
                         if (rollingLogs.size() > 100) {
@@ -66,13 +64,12 @@ public class GateDataService {
             }
             reader.close();
             
-            
-            this.latestGateStates = currentStates;
-            
-            
             Map<String, Object> payload = new HashMap<>();
             payload.put("currentStates", currentStates.values()); 
             payload.put("history", rollingLogs); 
+
+            
+            this.lastBroadcastedPayload = payload;
 
             messagingTemplate.convertAndSend("/topic/gatelogs", (Object) payload);
             log.info("Broadcasted states for {} unique gates and {} history logs.", currentStates.size(), rollingLogs.size());
@@ -82,7 +79,8 @@ public class GateDataService {
         }
     }
 
-    public Map<String, GateLog> getLatestGateStates() {
-        return latestGateStates;
+    
+    public Map<String, Object> getLastBroadcastedPayload() {
+        return lastBroadcastedPayload;
     }
 }
