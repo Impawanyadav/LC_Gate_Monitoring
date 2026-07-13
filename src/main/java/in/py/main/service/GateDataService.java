@@ -2,7 +2,6 @@ package in.py.main.service;
 
 import in.py.main.dto.GateLog;
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,30 +13,30 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class GateDataService {
-	@Value("${railway.sheet.url}")
+    
+    @Value("${railway.sheet.url}")
     private String SHEET_URL;
 
-    //private final String SHEET_URL = "";
-
-   
     private final SimpMessagingTemplate messagingTemplate;
-    private List<GateLog> latestDataCache = new ArrayList<>();
+    
+   
+    private Map<String, GateLog> latestGateStates = new HashMap<>();
+
     @PostConstruct
     public void loadDataOnStartup() {
         fetchAndBroadcastData();
     }
 
-    // Run this method automatically every 10 seconds (10000 ms)
     @Scheduled(fixedRate = 20000)
     public void fetchAndBroadcastData() {
-        List<GateLog> allLogs = new ArrayList<>();
+        LinkedList<GateLog> rollingLogs = new LinkedList<>();
+        Map<String, GateLog> currentStates = new HashMap<>();
 
         try {
             URL url = new URL(SHEET_URL);
@@ -52,20 +51,38 @@ public class GateDataService {
                 if (columns.length >= 4) {
                     String gateId = columns[0].trim();
                     if (gateId.matches("\\d+")) {
-                        allLogs.add(new GateLog(gateId, columns[1].trim(), columns[2].trim(), columns[3].trim()));
+                        GateLog logEntry = new GateLog(gateId, columns[1].trim(), columns[2].trim(), columns[3].trim());
+                        
+                       
+                        currentStates.put(gateId, logEntry);
+                        
+                        
+                        rollingLogs.add(logEntry);
+                        if (rollingLogs.size() > 100) {
+                            rollingLogs.removeFirst();
+                        }
                     }
                 }
             }
             reader.close();
-            this.latestDataCache = allLogs;
-            // Blast the final array to the frontend!
-            messagingTemplate.convertAndSend("/topic/gatelogs", allLogs);
-            log.info("Successfully fetched and broadcasted {} gate logs.", allLogs.size());
+            
+            
+            this.latestGateStates = currentStates;
+            
+            
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("currentStates", currentStates.values()); 
+            payload.put("history", rollingLogs); 
+
+            messagingTemplate.convertAndSend("/topic/gatelogs", (Object) payload);
+            log.info("Broadcasted states for {} unique gates and {} history logs.", currentStates.size(), rollingLogs.size());
             
         } catch (Exception e) {
             log.error("Failed to fetch data: " + e.getMessage());
         }
     }
-    public List<GateLog> getLatestDataCache() {
-        return latestDataCache;}
+
+    public Map<String, GateLog> getLatestGateStates() {
+        return latestGateStates;
+    }
 }
