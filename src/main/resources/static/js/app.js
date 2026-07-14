@@ -154,25 +154,41 @@ function updateLiveCards() {
         let timeElement = document.getElementById(`time-${gateId}`);
 
         if (cardElement && statusElement && timeElement) {
-            statusElement.innerText = log.status;
             
-            // The fs-5 class was removed below to shrink the text size
-            timeElement.innerHTML = `
-                <div class="small opacity-75 mb-1 text-nowrap text-dark">
-                    ${log.date || "No Date"} | ${log.time || "No Time"}
-                </div>
-                <div class="fw-bold">
-                    Duration ${formatTimeDifference(log.timestamp, now)}
-                </div>
-            `;
-            
-            // 🎨 The logic that paints the boxes purely white
-            if (log.status === 'OPEN') {
-                cardElement.className = "card text-center h-100 bg-white text-dark";
-            } else if (log.status.includes('CLOSE')) {
-                cardElement.className = "card text-center h-100 bg-white text-dark";
+            // 🕒 24-HOUR INACTIVITY CHECK (24 hrs = 86,400,000 ms)
+            let diffMs = now - log.timestamp;
+            let isInactive = diffMs >= 86400000;
+
+            if (isInactive) {
+                // 1. Set text to INACTIVE
+                statusElement.innerText = "INACTIVE";
+                
+                // 2. Wipe out the Date, Time, and Duration completely
+                timeElement.innerHTML = ""; 
+                
+                // 3. Make the box greyed out
+                cardElement.className = "status-card h-100 bg-light text-muted";
+                
             } else {
-                cardElement.className = "card text-center h-100 bg-light text-dark";
+                // ACTIVE GATE LOGIC
+                statusElement.innerText = log.status;
+                
+                // Draw the Date, Time, and Duration
+                timeElement.innerHTML = `
+                    <div class="small opacity-75 mb-1 text-nowrap text-dark">
+                        ${log.date || "No Date"} | ${log.time || "No Time"}
+                    </div>
+                    <div class="fw-bold">
+                        Duration ${formatTimeDifference(log.timestamp, now)}
+                    </div>
+                `;
+                
+                // Paint the box Pure White
+                if (log.status === 'OPEN' || log.status.includes('CLOSE')) {
+                    cardElement.className = "status-card h-100 bg-white text-dark";
+                } else {
+                    cardElement.className = "status-card h-100 bg-light text-dark";
+                }
             }
         }
     }
