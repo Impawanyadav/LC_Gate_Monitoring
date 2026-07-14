@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (gateId) {
         // Update Title and Navigation
-        document.getElementById('dynamicTitle').innerText = 'Historical Logs: Gate No. ' + gateId;
+        document.getElementById('dynamicTitle').innerText = 'Activity Logs: Gate No. ' + gateId;
         document.getElementById('backToGateBtn').href = 'gate.html?id=' + gateId;
         
         // Fetch and display logs
