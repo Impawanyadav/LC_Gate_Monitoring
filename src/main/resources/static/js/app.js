@@ -150,7 +150,16 @@ function updateLiveCards() {
 
         if (cardElement && statusElement && timeElement) {
             statusElement.innerText = log.status;
-            timeElement.innerText = `Duration ${timeFormatted}`;
+            
+            // Inject Date and Time directly above the ticking duration
+            timeElement.innerHTML = `
+                <div class="small opacity-75 mb-1 text-nowrap">
+                    ${log.date} | ${log.time}
+                </div>
+                <div class="fw-bold fs-5">
+                    Duration ${timeFormatted}
+                </div>
+            `;
             
             if (log.status === 'OPEN') {
                 cardElement.className = "status-card bg-open h-100";
