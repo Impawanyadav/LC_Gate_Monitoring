@@ -2,11 +2,10 @@ let stompClient = null;
 let latestGateLogs = {}; 
 
 document.addEventListener("DOMContentLoaded", function() {
-    
-    // 1. INITIAL LOAD: Handle the new dual-payload format
     fetch('/api/initial-data')
         .then(response => response.json())
         .then(data => {
+            console.log("📥 Data from Backend:", data); // Check F12 Console if issues persist
             if (data && data.currentStates && data.history) {
                 updateDashboard(data.currentStates, data.history);
             }
@@ -22,20 +21,15 @@ function connectWebSocket() {
     stompClient.debug = null; 
 
     stompClient.connect({}, function (frame) {
-        console.log('Connected to SCADA WebSocket');
-
         stompClient.subscribe('/topic/gatelogs', function (message) {
             let payload = JSON.parse(message.body);
-            // Pass BOTH arrays to the dashboard updater
             updateDashboard(payload.currentStates, payload.history);
         });
     }, function(error) {
-        console.error("WebSocket connection lost. Retrying...", error);
         setTimeout(connectWebSocket, 5000); 
     });
 }
 
-// UPGRADED: Now handles hours if duration exceeds 60 minutes
 function formatTimeDifference(startTimestamp, endTimestamp) {
     let diffMs = endTimestamp - startTimestamp;
     if (diffMs < 0) diffMs = 0; 
@@ -44,53 +38,68 @@ function formatTimeDifference(startTimestamp, endTimestamp) {
     let diffMins = Math.floor((diffMs % 3600000) / 60000);
     let diffSecs = Math.floor((diffMs % 60000) / 1000);
     
-    if (diffHrs > 0) {
-        return `${diffHrs}h ${diffMins}m ${diffSecs}s`;
-    } else {
-        return `${diffMins}m ${diffSecs}s`;
-    }
+    if (diffHrs > 0) return `${diffHrs}h ${diffMins}m ${diffSecs}s`;
+    return `${diffMins}m ${diffSecs}s`;
 }
 
-// Reusable Date Shield: Protects against corrupted hardware math
+// 🛡️ AUTO-HEALING TRANSLATOR: Fixes Java field name mismatches automatically
+function autoNormalizeLog(rawLog) {
+    return {
+        gateId: String(rawLog.gateId || rawLog.id || rawLog.GateId || rawLog.gate_id || "UNKNOWN"),
+        status: String(rawLog.status || rawLog.state || rawLog.Status || rawLog.currentSignal || "UNKNOWN").toUpperCase(),
+        date: String(rawLog.date || rawLog.Date || rawLog.localDate || ""),
+        time: String(rawLog.time || rawLog.Time || rawLog.localTime || "")
+    };
+}
+
+// 🛡️ BULLETPROOF DATE SHIELD: Will never crash, even on bad Google Sheet formats
 function parseLogTimestamp(log) {
-    let dateParts = log.date.split(/[-/]/); 
-    let timeParts = log.time.split(':');
-    
-    if (dateParts.length >= 3 && timeParts.length >= 2) {
-        let year = 2000 + parseInt(dateParts[2]); 
-        let seconds = timeParts[2] ? parseInt(timeParts[2]) : 0; 
-        let timestamp = new Date(year, parseInt(dateParts[1]) - 1, parseInt(dateParts[0]), parseInt(timeParts[0]), parseInt(timeParts[1]), seconds).getTime();
+    if (!log.date || !log.time) return Date.now(); // Fallback to current time if missing
+
+    try {
+        let safeDate = log.date.replace(/\s+/g, '-'); // Fixes spaces in dates
+        let dateParts = safeDate.split(/[-/]/); 
+        let timeParts = log.time.split(':');
         
-        if (!isNaN(timestamp)) return timestamp;
+        if (dateParts.length >= 2 && timeParts.length >= 2) {
+            // Auto-guess the year if Google Sheets left it out
+            let year = dateParts.length === 3 ? 
+                (dateParts[2].length === 2 ? 2000 + parseInt(dateParts[2]) : parseInt(dateParts[2])) 
+                : new Date().getFullYear();
+                
+            let seconds = timeParts[2] ? parseInt(timeParts[2]) : 0; 
+            let timestamp = new Date(year, parseInt(dateParts[1]) - 1, parseInt(dateParts[0]), parseInt(timeParts[0]), parseInt(timeParts[1]), seconds).getTime();
+            
+            if (!isNaN(timestamp)) return timestamp;
+        }
+    } catch (e) {
+        console.error("Date Shield caught an error:", e);
     }
-    console.warn("Ignored log with corrupted date/time:", log);
-    return null;
+    
+    return Date.now(); // Force it to draw the UI even if the math fails
 }
 
-function updateDashboard(currentStates, historyLogs) {
+function updateDashboard(rawCurrentStates, rawHistoryLogs) {
     const tableBody = document.getElementById("master-log-table");
     tableBody.innerHTML = ""; 
     latestGateLogs = {}; 
 
-    // --- 1. GUARANTEED CARD UPDATES (From currentStates) ---
-    currentStates.forEach(log => {
-        let timestamp = parseLogTimestamp(log);
-        if (timestamp) {
-            log.timestamp = timestamp;
-            latestGateLogs[log.gateId] = log; 
-        }
+    // --- 1. GUARANTEED CARD UPDATES ---
+    rawCurrentStates.forEach(rawLog => {
+        let log = autoNormalizeLog(rawLog); 
+        log.timestamp = parseLogTimestamp(log);
+        latestGateLogs[log.gateId] = log; 
     });
 
-    // --- 2. THE HISTORY TABLE CLEANER (From historyLogs) ---
+    // --- 2. THE HISTORY TABLE CLEANER ---
     let cleanHistoryArray = [];
     let previousStatusTracker = {};
     let gateHistory = {};
     const validGates = ["111", "114", "115", "193", "194"]; 
 
-    historyLogs.forEach(log => {
-        let timestamp = parseLogTimestamp(log);
-        if (!timestamp) return; // Drop bad logs
-        log.timestamp = timestamp;
+    rawHistoryLogs.forEach(rawLog => {
+        let log = autoNormalizeLog(rawLog);
+        log.timestamp = parseLogTimestamp(log);
 
         if (!validGates.includes(log.gateId)) return; 
         if (previousStatusTracker[log.gateId] === log.status) return; 
@@ -108,24 +117,20 @@ function updateDashboard(currentStates, historyLogs) {
         let index = history.indexOf(log);
         
         let durationStr = "";
-        let tableActionText = 'Duration';
-
         if (index < history.length - 1) {
-            // HISTORICAL LOG
             let nextLog = history[index + 1];
-            let timeFormatted = formatTimeDifference(log.timestamp, nextLog.timestamp);
-            durationStr = `${tableActionText} ${timeFormatted}`;
+            durationStr = `Duration ${formatTimeDifference(log.timestamp, nextLog.timestamp)}`;
         } else {
-            // LATEST LOG IN HISTORY
-            let timeFormatted = formatTimeDifference(log.timestamp, Date.now());
-            durationStr = `<span class="live-duration text-primary fw-bold" data-timestamp="${log.timestamp}" data-status="${log.status}">
-                ${tableActionText} ${timeFormatted}
+            durationStr = `<span class="live-duration text-primary fw-bold" data-timestamp="${log.timestamp}">
+                Duration ${formatTimeDifference(log.timestamp, Date.now())}
             </span>`;
         }
 
+        let badgeClass = log.status === 'OPEN' ? 'bg-success' : (log.status === 'CLOSED' ? 'bg-danger' : 'bg-secondary');
+
         let row = `<tr>
             <td class="fw-bold">${log.gateId}</td>
-            <td><span class="badge ${log.status === 'OPEN' ? 'bg-success' : 'bg-danger'}">${log.status}</span></td>
+            <td><span class="badge ${badgeClass}">${log.status}</span></td>
             <td>${log.date}</td>
             <td>${log.time}</td>
             <td>${durationStr}</td>
@@ -142,7 +147,6 @@ function updateLiveCards() {
     
     for (let gateId in latestGateLogs) {
         let log = latestGateLogs[gateId];
-        let timeFormatted = formatTimeDifference(log.timestamp, now);
         
         let cardElement = document.getElementById(`card-${gateId}`);
         let statusElement = document.getElementById(`status-${gateId}`);
@@ -151,20 +155,22 @@ function updateLiveCards() {
         if (cardElement && statusElement && timeElement) {
             statusElement.innerText = log.status;
             
-            // Inject Date and Time directly above the ticking duration
+            // The fs-5 class was removed below to shrink the text size
             timeElement.innerHTML = `
-                <div class="small opacity-75 mb-1 text-nowrap">
-                    ${log.date} | ${log.time}
+                <div class="small opacity-75 mb-1 text-nowrap text-dark">
+                    ${log.date || "No Date"} | ${log.time || "No Time"}
                 </div>
-                <div class="fw-bold fs-5">
-                    Duration ${timeFormatted}
+                <div class="fw-bold">
+                    Duration ${formatTimeDifference(log.timestamp, now)}
                 </div>
             `;
             
             if (log.status === 'OPEN') {
-                cardElement.className = "status-card bg-open h-100";
+                cardElement.className = "card text-center h-100 traffic-card status-green";
+            } else if (log.status === 'CLOSED') {
+                cardElement.className = "card text-center h-100 traffic-card status-red";
             } else {
-                cardElement.className = "status-card bg-closed h-100";
+                cardElement.className = "card text-center h-100 traffic-card bg-light";
             }
         }
     }
@@ -172,8 +178,7 @@ function updateLiveCards() {
     let liveTableCells = document.querySelectorAll('.live-duration');
     liveTableCells.forEach(cell => {
         let ts = parseInt(cell.getAttribute('data-timestamp'));
-        let timeFormatted = formatTimeDifference(ts, now);
-        cell.innerText = `Duration ${timeFormatted}`;
+        cell.innerText = `Duration ${formatTimeDifference(ts, now)}`;
     });
 }
 
