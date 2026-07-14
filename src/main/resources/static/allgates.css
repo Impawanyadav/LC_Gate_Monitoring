@@ -216,3 +216,18 @@ body {
     background-color: #3b82f6; /* Foreground is open (blue) */
     transition: width 0.5s ease;
 }
+
+/* Responsive table wrapper */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 600px) {
+    .logs-table th, .logs-table td {
+        padding: 10px 8px; /* Slightly reduced padding */
+        font-size: 13px;   /* Slightly smaller text for better fit */
+    }
+}

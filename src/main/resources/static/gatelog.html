@@ -23,22 +23,23 @@
         <h2 class="section-title" id="dynamicTitle">Gate Logs</h2>
         
         <!-- Enterprise Table Layout -->
-        <div class="table-wrapper">
-            <table class="logs-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Duration</th>
-                    </tr>
-                </thead>
-                <tbody id="logsTableBody">
-                    <!-- JavaScript will inject the 1000 logs here -->
-                    <tr><td colspan="4" style="text-align: center; padding: 20px;">Loading logs...</td></tr>
-                </tbody>
-            </table>
-        </div>
+		<!-- Enterprise Table Layout with Responsive Wrapper -->
+		        <div class="table-wrapper" style="overflow-x: auto; width: 100%;">
+		            <table class="logs-table" style="min-width: 500px;"> 
+		                <thead>
+		                    <tr>
+		                        <th>Date</th>
+		                        <th>Time</th>
+		                        <th>Status</th>
+		                        <th>Duration</th>
+		                    </tr>
+		                </thead>
+		                <tbody id="logsTableBody">
+		                    <!-- JavaScript will inject the logs here -->
+		                    <tr><td colspan="4" style="text-align: center; padding: 20px;">Loading logs...</td></tr>
+		                </tbody>
+		            </table>
+		        </div>
 
         <!-- Show More Button (Centered) -->
         <div style="text-align: center; margin-top: 20px;">
