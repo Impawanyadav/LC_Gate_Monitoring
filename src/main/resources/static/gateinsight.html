@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Crossing Management - Advanced Insights</title>
+    <link rel="stylesheet" href="allgates.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Live LC Gate Monitoring</h1>
+        <a href="index.html" class="header-home-link">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
+            <a href="gate.html" id="backToGateBtn" class="secondary-back-btn">← Back to Gate Options</a>
+        </div>
+
+        <h2 class="section-title" id="dynamicTitle">Advanced Analytics</h2>
+        
+        <!-- SECTION 1: Key Performance Indicators (KPIs) -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Avg. Open Duration</div>
+                <div class="kpi-value text-blue" id="avgOpenTime">--</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Avg. Closed Duration</div>
+                <div class="kpi-value text-red" id="avgCloseTime">--</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Max Blockage Time</div>
+                <div class="kpi-value text-orange" id="maxBlockageTime">--</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Avg. Daily Closures</div>
+                <div class="kpi-value text-slate" id="dailyClosures">--</div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: Total Downtime Progress Bar -->
+        <div class="chart-card" style="margin-top: 20px;">
+            <h3>Total Gate Downtime Overview</h3>
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: 600; color: #475569;">
+                <span id="openPercentText">Open: --%</span>
+                <span id="closePercentText">Closed: --%</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar-blue" id="progressBar" style="width: 50%;"></div>
+            </div>
+            <p style="text-align: center; font-size: 13px; color: #64748b; margin-top: 10px;">
+                Percentage of time this gate is completely blocking road traffic.
+            </p>
+        </div>
+
+        <!-- SECTION 3: Advanced Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 style="text-align: center; width: 100%;">Day vs Night Operations</h3>
+                <!-- Wrapper to strictly control chart size -->
+                <div style="position: relative; height: 280px; width: 100%; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="dayNightChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3 style="text-align: center; width: 100%;">Most Active Days of the Week</h3>
+                <!-- Wrapper to strictly control chart size -->
+                <div style="position: relative; height: 280px; width: 100%; display: flex; justify-content: center; align-items: center;">
+                    <canvas id="dayOfWeekChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="insights.js"></script>
+</body>
+</html>

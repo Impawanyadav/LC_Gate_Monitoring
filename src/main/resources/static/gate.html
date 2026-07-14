@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Crossing Management - Gate Options</title>
+    <link rel="stylesheet" href="allgates.css">
+</head>
+<body>
+
+    <div class="header">
+        <h1>Live LC Gate Monitoring</h1>
+        <!-- Main header button now goes all the way back to the Dashboard -->
+        <a href="index.html" class="header-home-link">← Back to Dashboard</a>
+    </div>
+
+	<div class="container">
+	        
+	        <!-- NEW: Wrapper that pushes the button to the far right -->
+	        <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
+	            <a href="allgates.html" class="secondary-back-btn">← Back</a>
+	        </div>
+
+	        <h2 class="section-title" id="dynamicTitle">Select Option</h2>
+	        
+	        <!-- The rest of your grid stays exactly the same -->
+	        <div class="gates-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); max-width: 700px; margin: 0 auto;">
+           
+				 <a href="#" id="logsBtn" class="gate-card">
+                Gate Logs
+            </a>
+
+            <a href="#" id="insightsBtn" class="gate-card">
+                Gate Insights
+            </a>
+            
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const gateId = urlParams.get('id');
+
+        if (gateId) {
+            document.getElementById('dynamicTitle').innerText = 'Dashboard: Gate No. ' + gateId;
+            document.getElementById('logsBtn').href = 'gatelog.html?id=' + gateId;
+            document.getElementById('insightsBtn').href = 'gateinsight.html?id=' + gateId;
+        } else {
+            document.getElementById('dynamicTitle').innerText = 'Error: No Gate Selected';
+        }
+    </script>
+</body>
+</html>

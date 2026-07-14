@@ -1,0 +1,218 @@
+/* allgates.css */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.header {
+    background-color: #1e293b;
+    color: #ffffff;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.header-subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #475569;
+    border-left: 4px solid #3b82f6;
+    padding-left: 10px;
+    font-weight: 600;
+}
+
+.gates-grid {
+    display: grid;
+    /* Adjusted size for minimalist boxes */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 30px;
+}
+
+.gate-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    padding: 50px 20px;
+    text-align: center;
+    text-decoration: none; /* Removes hyperlink underline */
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    display: block;
+}
+
+.gate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.header-home-link {
+    color: #ffffff; /* Changed to pure white */
+    font-size: 14px;
+    font-weight: 700; /* Made it explicitly bold */
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.header-home-link:hover {
+    background-color: #334155;
+    border-color: #64748b;
+}
+/* Secondary Back Button (Right-aligned, matching header button style) */
+.secondary-back-btn {
+    color: #1e293b; /* Dark slate text so it shows on the light background */
+    font-size: 14px;
+    font-weight: 700; /* Same bold font as header button */
+    text-decoration: none;
+    padding: 8px 16px; /* Same padding as header button */
+    border: 1px solid #475569; /* Same border */
+    border-radius: 6px; /* Same rounded corners */
+    transition: all 0.2s ease;
+}
+
+.secondary-back-btn:hover {
+    color: #ffffff;
+    background-color: #475569; /* Fills in dark on hover for a great effect */
+}
+
+/* Table Styles for gatelog.html */
+.table-wrapper {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden; 
+    margin-top: 20px;
+}
+
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.logs-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+    padding: 16px 20px;
+    border-bottom: 2px solid #e2e8f0;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.logs-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #1e293b;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.logs-table tr:last-child td {
+    border-bottom: none;
+}
+
+.logs-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.status-badge {
+    background-color: #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+}
+
+
+/* Chart Layouts for gateinsight.html */
+/* --- Advanced Analytics Dashboard Styles --- */
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.kpi-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.kpi-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* KPI Colors */
+.text-blue { color: #3b82f6; }
+.text-red { color: #ef4444; }
+.text-orange { color: #f59e0b; }
+.text-slate { color: #334155; }
+
+/* Progress Bar */
+.progress-container {
+    width: 100%;
+    height: 16px;
+    background-color: #ef4444; /* Background is closed (red) */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.progress-bar-blue {
+    height: 100%;
+    background-color: #3b82f6; /* Foreground is open (blue) */
+    transition: width 0.5s ease;
+}
