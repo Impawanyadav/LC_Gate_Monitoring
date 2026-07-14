@@ -126,7 +126,8 @@ function updateDashboard(rawCurrentStates, rawHistoryLogs) {
             </span>`;
         }
 
-        let badgeClass = log.status === 'OPEN' ? 'bg-success' : (log.status === 'CLOSE' ? 'bg-danger' : 'bg-secondary');
+        // Updated to use .includes() for safety against "CLOSE" vs "CLOSED"
+        let badgeClass = log.status === 'OPEN' ? 'bg-success' : (log.status.includes('CLOSE') ? 'bg-danger' : 'bg-secondary');
 
         let row = `<tr>
             <td class="fw-bold">${log.gateId}</td>
@@ -165,7 +166,14 @@ function updateLiveCards() {
                 </div>
             `;
             
-            
+            // 🎨 The logic that paints the boxes purely white
+            if (log.status === 'OPEN') {
+                cardElement.className = "card text-center h-100 bg-white text-dark";
+            } else if (log.status.includes('CLOSE')) {
+                cardElement.className = "card text-center h-100 bg-white text-dark";
+            } else {
+                cardElement.className = "card text-center h-100 bg-light text-dark";
+            }
         }
     }
 
