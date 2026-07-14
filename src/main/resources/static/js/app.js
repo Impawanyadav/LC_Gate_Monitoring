@@ -126,7 +126,7 @@ function updateDashboard(rawCurrentStates, rawHistoryLogs) {
             </span>`;
         }
 
-        let badgeClass = log.status === 'OPEN' ? 'bg-success' : (log.status === 'CLOSED' ? 'bg-danger' : 'bg-secondary');
+        let badgeClass = log.status === 'OPEN' ? 'bg-success' : (log.status === 'CLOSE' ? 'bg-danger' : 'bg-secondary');
 
         let row = `<tr>
             <td class="fw-bold">${log.gateId}</td>
@@ -165,13 +165,7 @@ function updateLiveCards() {
                 </div>
             `;
             
-            if (log.status === 'OPEN') {
-                cardElement.className = "card text-center h-100 traffic-card status-green";
-            } else if (log.status === 'CLOSED') {
-                cardElement.className = "card text-center h-100 traffic-card status-red";
-            } else {
-                cardElement.className = "card text-center h-100 traffic-card bg-light";
-            }
+            
         }
     }
 
