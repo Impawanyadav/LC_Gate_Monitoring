@@ -36,7 +36,7 @@ public class GateDataService {
         fetchAndBroadcastData();
     }
 
-    @Scheduled(fixedRate = 20000)
+    @Scheduled(fixedRate = 30000)
     public void fetchAndBroadcastData() {
         LinkedList<GateLog> rollingLogs = new LinkedList<>();
         Map<String, GateLog> currentStates = new HashMap<>();
