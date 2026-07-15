@@ -12,5 +12,9 @@ public class GateLog {
     private String status;
     private String date;
     private String time;
+    private String duration;       
+    
+    
+    private long durationMins;
 
 }

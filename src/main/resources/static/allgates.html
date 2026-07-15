@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Crossing Management - Select Gate</title>
+    <title>NR LC Gate Monitoring</title>
     <link rel="stylesheet" href="allgates.css">
 </head>
 <body>
 
-	<div class="header">
-	        <h1>Live LC Gate Monitoring</h1>
-	        <a href="index.html" class="header-home-link">Home</a>
-	    </div>
+    <!-- UNIFIED HEADER (Text Only) -->
+    <div class="header">
+        <h1>NR LC Gate Monitoring</h1>
+    </div>
 
-    <div class="container">
+    <!-- NEW ACTION BAR (Sub-Nav using newnavbarallpage CSS) -->
+    <div class="newnavbarallpage">
+        <!-- Left Side: Back & Home Group -->
+        <div class="nav-group">
+            <a href="index.html" class="nav-btn">← Back</a>
+            <a href="index.html" class="nav-btn">Home</a>
+        </div>
+        
+        <!-- Right Side: Logout -->
+        <div class="nav-group">
+            <form action="/logout" method="POST" style="margin: 0;">
+                <button type="submit" class="nav-btn nav-btn-red">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Container with reduced top margin to fit closely under the navbar -->
+    <div class="container" style="margin-top: 20px;">
         <h2 class="section-title">Select Active Gate</h2>
         
         <div class="gates-grid">

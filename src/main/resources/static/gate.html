@@ -3,30 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Crossing Management - Gate Options</title>
+    <title>NR LC Gate Monitoring</title>
     <link rel="stylesheet" href="allgates.css">
 </head>
 <body>
 
+    <!-- UNIFIED HEADER (Text Only) -->
     <div class="header">
-        <h1>Live LC Gate Monitoring</h1>
-        <!-- Main header button now goes all the way back to the Dashboard -->
-        <a href="index.html" class="header-home-link"> Home</a>
+        <h1>NR LC Gate Monitoring</h1>
     </div>
 
-	<div class="container">
-	        
-	        <!-- NEW: Wrapper that pushes the button to the far right -->
-	        <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
-	            <a href="allgates.html" class="secondary-back-btn">← Back</a>
-	        </div>
+    <!-- NEW ACTION BAR (Sub-Nav using newnavbarallpage CSS) -->
+    <div class="newnavbarallpage">
+        <!-- Left Side: Back & Home Group -->
+        <div class="nav-group">
+            <a href="allgates.html" class="nav-btn">← Back</a>
+            <a href="index.html" class="nav-btn">Home</a>
+        </div>
+        
+        <!-- Right Side: Logout -->
+        <div class="nav-group">
+            <form action="/logout" method="POST" style="margin: 0;">
+                <button type="submit" class="nav-btn nav-btn-red">Logout</button>
+            </form>
+        </div>
+    </div>
 
-	        <h2 class="section-title" id="dynamicTitle">Select Option</h2>
-	        
-	        <!-- The rest of your grid stays exactly the same -->
-	        <div class="gates-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); max-width: 700px; margin: 0 auto;">
-           
-				 <a href="#" id="logsBtn" class="gate-card">
+    <!-- Container with reduced top margin to fit closely under the navbar -->
+    <div class="container" style="margin-top: 20px;">
+        
+        <h2 class="section-title" id="dynamicTitle">Select Option</h2>
+        
+        <!-- The rest of your grid stays exactly the same -->
+        <div class="gates-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); max-width: 700px; margin: 0 auto;">
+       
+            <a href="#" id="logsBtn" class="gate-card">
                 Gate Logs
             </a>
 

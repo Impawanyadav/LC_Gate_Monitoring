@@ -3,24 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Crossing Management - Advanced Insights</title>
+    <title>NR LC Gate Monitoring</title>
     <link rel="stylesheet" href="allgates.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
+    <!-- UNIFIED HEADER (Text Only) -->
     <div class="header">
-        <h1>Live LC Gate Monitoring</h1>
-        <a href="index.html" class="header-home-link">Home</a>
+        <h1>NR LC Gate Monitoring</h1>
     </div>
 
-    <div class="container">
-        
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
-            <a href="gate.html" id="backToGateBtn" class="secondary-back-btn">← Back</a>
+    <!-- NEW ACTION BAR (Sub-Nav using newnavbarallpage CSS) -->
+    <div class="newnavbarallpage">
+        <!-- Left Side: Back & Home Group -->
+        <div class="nav-group">
+            <a href="gate.html" id="backToGateBtn" class="nav-btn">← Back</a>
+            <a href="index.html" class="nav-btn">Home</a>
         </div>
+        
+        <!-- Right Side: Logout -->
+        <div class="nav-group">
+            <form action="/logout" method="POST" style="margin: 0;">
+                <button type="submit" class="nav-btn nav-btn-red">Logout</button>
+            </form>
+        </div>
+    </div>
 
-        <h2 class="section-title" id="dynamicTitle">Advanced Analytics</h2>
+    <!-- Container with reduced top margin to fit closely under the navbar -->
+    <div class="container" style="margin-top: 20px;">
+        
+        <!-- Flexbox container for Title and Time Filter Dropdown -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 class="section-title" id="dynamicTitle" style="margin-bottom: 0;">Advanced Analytics</h2>
+            
+            <select id="timeFilter" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; color: #1e293b; font-weight: 600; cursor: pointer; background-color: white;">
+                <option value="all">All Time</option>
+                <option value="last_week">Last 7 Days</option>
+                <option value="last_month">Last 30 Days</option>
+                <option value="last_year">Last Year</option>
+            </select>
+        </div>
         
         <!-- SECTION 1: Key Performance Indicators (KPIs) -->
         <div class="kpi-grid">

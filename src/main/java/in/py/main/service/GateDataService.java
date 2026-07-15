@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,7 +33,7 @@ public class GateDataService {
     
     private Map<String, Object> lastBroadcastedPayload = new HashMap<>();
 
-    // NEW: Thread-safe store for Analytics (Holds up to 1000 logs per gate)
+    // Thread-safe store for Analytics (Holds up to 2000 logs per gate)
     private Map<String, LinkedList<GateLog>> fullAnalyticsStore = new ConcurrentHashMap<>();
 
     @PostConstruct
@@ -38,10 +43,16 @@ public class GateDataService {
 
     @Scheduled(fixedRate = 30000)
     public void fetchAndBroadcastData() {
+        // Global Recent 100 Logs (as requested)
         LinkedList<GateLog> rollingLogs = new LinkedList<>();
+        
+        // HashMap for Current Active State of each gate
         Map<String, GateLog> currentStates = new HashMap<>();
         
-        // NEW: Temporary map to build the analytics data during this read cycle
+        // HashMap for the Latest 5 Logs per Gate (as requested)
+        Map<String, LinkedList<GateLog>> latestFivePerGate = new HashMap<>();
+        
+        // Analytics store for the REST API
         Map<String, LinkedList<GateLog>> tempAnalytics = new HashMap<>();
 
         try {
@@ -57,38 +68,76 @@ public class GateDataService {
                 if (columns.length >= 4) {
                     String gateId = columns[0].trim();
                     if (gateId.matches("\\d+")) {
-                        GateLog logEntry = new GateLog(gateId, columns[1].trim(), columns[2].trim(), columns[3].trim());
-                        
-                        // 1. Update Live Dashboard State
+                        GateLog logEntry = new GateLog();
+                        logEntry.setGateId(gateId);
+                        logEntry.setStatus(columns[1].trim());
+                        logEntry.setDate(columns[2].trim());
+                        logEntry.setTime(columns[3].trim());
+
+                        // --- THE MAGIC: CALCULATE DURATION BY REFERENCE ---
+                        // Get the previous log for this gate before we overwrite it
+                        GateLog prevLog = currentStates.get(gateId);
+                        if (prevLog != null) {
+                            LocalDateTime prevDt = parseDateTime(prevLog.getDate(), prevLog.getTime());
+                            LocalDateTime currDt = parseDateTime(logEntry.getDate(), logEntry.getTime());
+                            
+                            if (!prevDt.equals(LocalDateTime.MIN) && !currDt.equals(LocalDateTime.MIN)) {
+                                long diffMins = Math.abs(Duration.between(prevDt, currDt).toMinutes());
+                                prevLog.setDurationMins(diffMins);
+                                prevLog.setDuration(formatDuration(diffMins));
+                            }
+                        }
+
+                        // 1. Update Current States (this log is now the newest)
                         currentStates.put(gateId, logEntry);
                         
-                        // 2. Global Rolling Logs (Max 100 for the WebSocket)
+                        // 2. Global Rolling Logs (Max 100 drop logic)
                         rollingLogs.add(logEntry);
                         if (rollingLogs.size() > 100) {
                             rollingLogs.removeFirst();
                         }
+                        
+                        // 3. HashMap for Latest 5 Gate Logs
+                        latestFivePerGate.computeIfAbsent(gateId, k -> new LinkedList<>()).add(logEntry);
+                        if (latestFivePerGate.get(gateId).size() > 5) {
+                            latestFivePerGate.get(gateId).removeFirst();
+                        }
 
-                        // 3. NEW: Gate-Specific Analytics (Max 1000 per gate)
+                        // 4. Gate-Specific Analytics (Max 2000 per gate)
                         tempAnalytics.computeIfAbsent(gateId, k -> new LinkedList<>()).add(logEntry);
                         if (tempAnalytics.get(gateId).size() > 2000) {
-                            tempAnalytics.get(gateId).removeFirst(); // Drop the oldest log
+                            tempAnalytics.get(gateId).removeFirst();
                         }
                     }
                 }
             }
             reader.close();
             
-            // Safely overwrite the main analytics store so the REST API can serve it instantly
+            // --- SET "CURRENT STATE" FOR THE ACTIVE LOGS ---
+            // After reading all rows, the logs left in currentStates are the active ones.
+            for (GateLog activeLog : currentStates.values()) {
+                activeLog.setDurationMins(0);
+                activeLog.setDuration("Current State"); // Frontend JavaScript will turn this into a live ticking clock!
+            }
+            
+            // Safely overwrite the main analytics store
             this.fullAnalyticsStore = new ConcurrentHashMap<>(tempAnalytics);
             
+            // Build the Payload for the Live Dashboard (`index.html`)
             Map<String, Object> payload = new HashMap<>();
             payload.put("currentStates", currentStates.values()); 
+            
+            // Reverse rolling logs so the absolute newest logs are at the top of the frontend table
+            Collections.reverse(rollingLogs);
             payload.put("history", rollingLogs); 
+            
+            // Add latest 5 per gate just in case the frontend needs it
+            payload.put("latestFive", latestFivePerGate);
 
             this.lastBroadcastedPayload = payload;
 
             messagingTemplate.convertAndSend("/topic/gatelogs", (Object) payload);
-            log.info("Broadcasted states for {} unique gates and {} history logs.", currentStates.size(), rollingLogs.size());
+            log.info("Broadcasted states for {} gates and {} history logs.", currentStates.size(), rollingLogs.size());
             
         } catch (Exception e) {
             log.error("Failed to fetch data: " + e.getMessage());
@@ -99,8 +148,24 @@ public class GateDataService {
         return lastBroadcastedPayload;
     }
 
-    // NEW: Method for your AnalyticsController to fetch the 1000 logs instantly
     public List<GateLog> getGateHistory(String gateId) {
         return fullAnalyticsStore.getOrDefault(gateId, new LinkedList<>());
+    }
+    
+    // --- HELPER METHODS ---
+    private LocalDateTime parseDateTime(String dateStr, String timeStr) {
+        try {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm:ss");
+            String t = timeStr.split(":").length == 2 ? timeStr + ":00" : timeStr;
+            return LocalDateTime.of(LocalDate.parse(dateStr, dateFormatter), LocalTime.parse(t, timeFormatter));
+        } catch (Exception e) { return LocalDateTime.MIN; }
+    }
+
+    private String formatDuration(long diffMins) {
+        if (diffMins < 60) return diffMins + " min";
+        long hrs = diffMins / 60;
+        long mins = diffMins % 60;
+        return hrs + " hr " + mins + " min";
     }
 }

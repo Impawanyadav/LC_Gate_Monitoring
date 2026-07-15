@@ -3,48 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Crossing Management - Gate Logs</title>
+    <title>NR LC Gate Monitoring</title>
     <link rel="stylesheet" href="allgates.css">
 </head>
 <body>
 
+    <!-- UNIFIED HEADER (Text Only) -->
     <div class="header">
-        <h1>Live LC Gate Monitoring</h1>
-        <a href="index.html" class="header-home-link">Home</a>
+        <h1>NR LC Gate Monitoring</h1>
     </div>
 
-    <div class="container">
-        
-        <!-- Back button pointing to the specific Gate dashboard -->
-        <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
-            <a href="gate.html" id="backToGateBtn" class="secondary-back-btn">← Back</a>
+    <!-- NEW ACTION BAR (Sub-Nav using newnavbarallpage CSS) -->
+    <div class="newnavbarallpage">
+        <!-- Left Side: Back & Home Group -->
+        <div class="nav-group">
+            <a href="gate.html" id="backToGateBtn" class="nav-btn">← Back</a>
+            <a href="index.html" class="nav-btn">Home</a>
         </div>
+        
+        <!-- Right Side: Logout -->
+        <div class="nav-group">
+            <form action="/logout" method="POST" style="margin: 0;">
+                <button type="submit" class="nav-btn nav-btn-red">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Container with reduced top margin to fit closely under the navbar -->
+    <div class="container" style="margin-top: 20px;">
 
         <h2 class="section-title" id="dynamicTitle">Gate Logs</h2>
         
-        <!-- Enterprise Table Layout -->
-		<!-- Enterprise Table Layout with Responsive Wrapper -->
-		        <div class="table-wrapper" style="overflow-x: auto; width: 100%;">
-		            <table class="logs-table" style="min-width: 500px;"> 
-		                <thead>
-		                    <tr>
-		                        <th>Date</th>
-		                        <th>Time</th>
-		                        <th>Status</th>
-		                        <th>Duration</th>
-		                    </tr>
-		                </thead>
-		                <tbody id="logsTableBody">
-		                    <!-- JavaScript will inject the logs here -->
-		                    <tr><td colspan="4" style="text-align: center; padding: 20px;">Loading logs...</td></tr>
-		                </tbody>
-		            </table>
-		        </div>
+        <!-- NEW FILTER SECTION -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>From Date</label>
+                <input type="date" id="filterFromDate">
+            </div>
+            <div class="filter-group">
+                <label>To Date</label>
+                <input type="date" id="filterToDate">
+            </div>
+            <div class="filter-group">
+                <label>Status</label>
+                <select id="filterStatus">
+                    <option value="all">All</option>
+                    <option value="OPEN">Open</option>
+                    <option value="CLOSE">Close</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Duration</label>
+                <select id="filterDuration">
+                    <option value="all">All Durations</option>
+                    <option value="<1">Less than 1 min</option>
+                    <option value="<10">Less than 10 mins</option>
+                    <option value="<60">Less than 1 hour</option>
+                    <option value=">60">Greater than 1 hour</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Time of Day</label>
+                <select id="filterTime">
+                    <option value="all">All Times</option>
+                    <option value="morning">Morning (6 AM - 6 PM)</option>
+                    <option value="night">Night (6 PM - 6 AM)</option>
+                </select>
+            </div>
+            <div class="filter-group filter-btn-group">
+                <button id="applyFiltersBtn" class="btn-action">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Enterprise Table Layout with Responsive Wrapper -->
+        <div class="table-wrapper" style="overflow-x: auto; width: 100%;">
+            <table class="logs-table" style="min-width: 500px;"> 
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                    <!-- JavaScript will inject the logs here -->
+                    <tr><td colspan="4" style="text-align: center; padding: 20px;">Loading logs...</td></tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- Show More Button (Centered) -->
         <div style="text-align: center; margin-top: 20px;">
             <button id="showMoreBtn" class="btn-action" style="display: none; width: auto; padding: 10px 30px; margin: 0 auto; border: none; cursor: pointer;">
-                Load More Logs
+                Load Next 50 Logs
             </button>
         </div>
 

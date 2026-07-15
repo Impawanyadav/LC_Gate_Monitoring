@@ -231,3 +231,176 @@ body {
         font-size: 13px;   /* Slightly smaller text for better fit */
     }
 }
+
+
+/* =========================================================
+   NEW FILTER SECTION STYLES FOR GATELOG.HTML
+   ========================================================= */
+
+   .filter-section {
+       background-color: #1e293b; /* Changed to match header */
+       border-radius: 12px;
+       box-shadow: 0 4px 15px rgba(0,0,0,0.15); /* Slightly darker shadow for depth */
+       border: 1px solid #334155; /* Darker border to blend in */
+       padding: 20px;
+       margin-bottom: 20px;
+       display: flex;
+       flex-wrap: wrap;
+       gap: 15px;
+       align-items: flex-end;
+   }
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 150px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    color: #f1f5f9; /* Changed to off-white for readability on dark background */
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.filter-group input, 
+.filter-group select {
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #334155;
+    background-color: #f8fafc;
+    outline: none;
+    transition: border-color 0.2s ease;
+    font-family: inherit;
+}
+
+.filter-group input:focus, 
+.filter-group select:focus {
+    border-color: #3b82f6;
+    background-color: #ffffff;
+}
+
+.filter-btn-group {
+    flex: 0 0 auto;
+}
+
+/* Enhancing the primary action button to match the theme */
+.btn-action {
+    background-color: #3b82f6;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-action:hover {
+    background-color: #2563eb;
+}
+
+.btn-action:active {
+    transform: scale(0.98);
+}
+
+/* Mobile Responsiveness for Filters */
+@media (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: 100%;
+    }
+    
+    .filter-btn-group {
+        margin-top: 10px;
+    }
+    
+    .btn-action {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   NEW UNIFIED ACTION BAR (newnavbarallpage)
+   ========================================================= */
+.newnavbarallpage {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+.newnavbarallpage .nav-group {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Base button style */
+.newnavbarallpage .nav-btn {
+    color: #1e293b;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    background-color: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-block;
+}
+
+.newnavbarallpage .nav-btn:hover {
+    color: #ffffff;
+    background-color: #475569;
+}
+
+/* Primary Button (Blue for Insights) */
+.newnavbarallpage .nav-btn-blue {
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.newnavbarallpage .nav-btn-blue:hover {
+    background-color: #3b82f6;
+    color: #ffffff;
+    border-color: #3b82f6;
+}
+
+/* Danger Button (Red for Logout) */
+.newnavbarallpage .nav-btn-red {
+    background-color: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.newnavbarallpage .nav-btn-red:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+    .newnavbarallpage {
+        padding: 10px 15px;
+    }
+    .newnavbarallpage .nav-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
