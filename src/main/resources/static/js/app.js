@@ -130,7 +130,7 @@ function updateLiveCards() {
                         ${log.date || "No Date"} | ${log.time || "No Time"}
                     </div>
                     <div class="fw-bold text-dark">
-                        Duration ${formatTimeDifference(log.timestamp, now)}
+                        ${formatTimeDifference(log.timestamp, now)}
                     </div>
                 `;
                 
