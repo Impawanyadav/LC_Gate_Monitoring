@@ -144,7 +144,7 @@ function updateLiveCards() {
     let liveTableCells = document.querySelectorAll('.live-duration');
     liveTableCells.forEach(cell => {
         let ts = parseInt(cell.getAttribute('data-timestamp'));
-        cell.innerText = `Duration ${formatTimeDifference(ts, now)}`;
+        cell.innerText = `${formatTimeDifference(ts, now)}`;
     });
 }
 
