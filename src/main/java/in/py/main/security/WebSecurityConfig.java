@@ -67,11 +67,11 @@ public class WebSecurityConfig {
                 .deleteCookies("JSESSIONID") 
                 .permitAll()
             )
-        .csrf(csrf -> csrf.disable())
+        .csrf(csrf -> csrf.disable());
         
         // NEW LINE: Add the rate limit filter before Spring processes the login
        // .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
         
-      //  return http.build();
-   // }
+         return http.build();
+    }
 }
