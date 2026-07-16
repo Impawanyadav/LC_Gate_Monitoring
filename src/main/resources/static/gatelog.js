@@ -7,8 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
     currentGateId = urlParams.get('id');
 
     if (currentGateId) {
-        document.getElementById('dynamicTitle').innerText = 'Activity Logs: Gate No. ' + currentGateId;
+        document.getElementById('dynamicTitle').innerText = 'Activity Logs: LC Gate  ' + currentGateId;
         document.getElementById('backToGateBtn').href = 'gate.html?id=' + currentGateId;
+        
+        // NEW LOGIC: Determine the station name based on the Gate ID
+        let stationName = "";
+        if (currentGateId === '111' || currentGateId === '114' || currentGateId === '115') {
+            stationName = "Gauriganj";
+        } else if (currentGateId === '193' || currentGateId === '194') {
+            stationName = "Mohanlalganj";
+        }
+        
+        // Inject the station name into the subtitle tag
+        if (stationName) {
+            document.getElementById('stationSubtitle').innerText = 'Station: ' + stationName;
+        }
+
         fetchLogs(true); // true means it's a fresh search (page 0)
     } else {
         document.getElementById('dynamicTitle').innerText = 'Error: No Gate Selected';

@@ -86,7 +86,7 @@ function updateDashboard(currentStates, historyLogs) {
 
         let statusText = log.status ? log.status.trim().toUpperCase() : "UNKNOWN";
         
-        // UPDATED LOGIC: OPEN is now bg-danger (Red), CLOSE is now bg-success (Green)
+        // STANDARD BADGES FIXED: OPEN = Red (bg-danger), CLOSE = Green (bg-success)
         let badgeClass = statusText === 'OPEN' ? 'bg-danger' : (statusText.includes('CLOSE') ? 'bg-success' : 'bg-secondary');
 
         let row = `<tr>
@@ -114,15 +114,32 @@ function updateLiveCards() {
             let diffMs = now - log.timestamp;
             let isInactive = diffMs >= 86400000; // 24 hrs
 
-            // Reset inline styles
+            // Reset inline styles and classes
             statusElement.style.color = ""; 
+            statusElement.classList.remove('text-danger', 'text-success', 'text-secondary');
 
             if (isInactive) {
                 statusElement.innerText = "INACTIVE";
                 timeElement.innerHTML = ""; 
-                cardElement.className = "status-card h-100 bg-light text-muted";
+                cardElement.className = "status-card h-100 text-muted";
+                cardElement.style.backgroundColor = "#f8f9fa"; // Slight Grey for inactive
             } else {
+                let statusText = log.status ? log.status.trim().toUpperCase() : "";
                 statusElement.innerText = log.status;
+                
+                // SLIGHT BACKGROUND COLORS APPLIED HERE
+                if (statusText === 'OPEN') {
+                    statusElement.classList.add('text-danger');
+                    cardElement.style.backgroundColor = "#ffebee"; // Slight Red
+                    cardElement.className = "status-card h-100 text-dark"; 
+                } else if (statusText.includes('CLOSE')) {
+                    statusElement.classList.add('text-success');
+                    cardElement.style.backgroundColor = "#e8f5e9"; // Slight Green
+                    cardElement.className = "status-card h-100 text-dark"; 
+                } else {
+                    cardElement.style.backgroundColor = "#ffffff"; // Default White
+                    cardElement.className = "status-card h-100 text-dark"; 
+                }
                 
                 // Exactly as it was before: pure black/dark text
                 timeElement.innerHTML = `
@@ -133,9 +150,6 @@ function updateLiveCards() {
                         ${formatTimeDifference(log.timestamp, now)}
                     </div>
                 `;
-                
-                // FORCE PURE WHITE BACKGROUND FOR ALL ACTIVE GATES
-                cardElement.className = "status-card h-100 bg-white text-dark"; 
             }
         }
     }

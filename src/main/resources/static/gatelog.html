@@ -32,7 +32,11 @@
     <!-- Container with reduced top margin to fit closely under the navbar -->
     <div class="container" style="margin-top: 20px;">
 
-        <h2 class="section-title" id="dynamicTitle">Gate Logs</h2>
+        <!-- Modified title to reduce bottom margin so the subtitle tucks nicely underneath -->
+        <h2 class="section-title" id="dynamicTitle" style="margin-bottom: 5px;">Gate Logs</h2>
+        
+        <!-- NEW: Subtitle element aligned with the title text -->
+        <p id="stationSubtitle" style="font-size: 16px; font-weight: 500; color: #64748b; margin: 0 0 30px 14px;"></p>
         
         <!-- NEW FILTER SECTION -->
         <div class="filter-section">
@@ -66,7 +70,7 @@
                 <label>Time of Day</label>
                 <select id="filterTime">
                     <option value="all">All Times</option>
-                    <option value="morning">Morning (6 AM - 6 PM)</option>
+                    <option value="morning">Day (6 AM - 6 PM)</option>
                     <option value="night">Night (6 PM - 6 AM)</option>
                 </select>
             </div>

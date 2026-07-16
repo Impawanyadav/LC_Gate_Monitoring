@@ -33,9 +33,14 @@
     <!-- Container with reduced top margin to fit closely under the navbar -->
     <div class="container" style="margin-top: 20px;">
         
-        <!-- Flexbox container for Title and Time Filter Dropdown -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 class="section-title" id="dynamicTitle" style="margin-bottom: 0;">Advanced Analytics</h2>
+        <!-- Flexbox container for Title/Subtitle block and Time Filter Dropdown -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+            
+            <!-- NEW: Wrapper to stack Title and Subtitle -->
+            <div style="display: flex; flex-direction: column;">
+                <h2 class="section-title" id="dynamicTitle" style="margin-bottom: 5px;">Advanced Analytics</h2>
+                <p id="stationSubtitle" style="font-size: 16px; font-weight: 500; color: #64748b; margin: 0 0 0 14px;"></p>
+            </div>
             
             <select id="timeFilter" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #cbd5e1; color: #1e293b; font-weight: 600; cursor: pointer; background-color: white;">
                 <option value="all">All Time</option>

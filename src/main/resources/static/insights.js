@@ -4,8 +4,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const filterDropdown = document.getElementById('timeFilter');
 
     if (gateId) {
-        document.getElementById('dynamicTitle').innerText = 'Advanced Analytics: Gate No. ' + gateId;
+        document.getElementById('dynamicTitle').innerText = 'Advanced Analytics: LC Gate  ' + gateId;
         document.getElementById('backToGateBtn').href = 'gate.html?id=' + gateId;
+        
+        // NEW LOGIC: Determine the station name based on the Gate ID
+        let stationName = "";
+        if (gateId === '111' || gateId === '114' || gateId === '115') {
+            stationName = "Gauriganj";
+        } else if (gateId === '193' || gateId === '194') {
+            stationName = "Mohanlalganj";
+        }
+        
+        // Inject the station name into the subtitle tag
+        if (stationName) {
+            document.getElementById('stationSubtitle').innerText = 'Station: ' + stationName;
+        }
         
         // 1. Initial load using the default dropdown value
         fetchAndRenderInsights(gateId, filterDropdown.value);
