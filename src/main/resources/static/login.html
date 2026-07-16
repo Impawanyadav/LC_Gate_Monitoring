@@ -26,14 +26,21 @@
 <body>
 
     <div class="login-card">
-        <h3 class="text-center mb-4">NR LC Gate Monitoring System</h3>
+        <h3 class="text-center mb-4">NR LC Gate Monitoring</h3>
         
         <div id="logout-message" class="alert alert-success d-none text-center" role="alert">
             You have successfully logged out.
         </div>
 
+        <!-- Standard Error: Invalid Credentials -->
         <div id="error-message" class="alert alert-danger d-none text-center" role="alert">
             Invalid Admin ID or Password. Please try again.
+        </div>
+        
+        <!-- NEW Error: Rate Limit Lockout -->
+        <div id="locked-message" class="alert alert-danger d-none text-center" role="alert">
+            <strong>Access Blocked</strong><br>
+            Too many failed attempts. Please try again in 15 minutes.
         </div>
         
         <form action="/login" method="POST">
@@ -59,8 +66,12 @@
             document.getElementById('logout-message').classList.remove('d-none');
         }
 
-        // If URL has ?error=true, show red banner
-        if (urlParams.includes('error=true')) {
+        // Check for specific error parameters
+        if (urlParams.includes('error=locked')) {
+            // Show the 15-minute lockout warning
+            document.getElementById('locked-message').classList.remove('d-none');
+        } else if (urlParams.includes('error=true') || urlParams.includes('error')) {
+            // Show the standard invalid credentials warning
             document.getElementById('error-message').classList.remove('d-none');
         }
     </script>
