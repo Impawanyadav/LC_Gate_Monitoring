@@ -78,10 +78,10 @@ function updateDashboard(currentStates, historyLogs) {
             let ts = parseLogTimestamp(log.date, log.time);
             // Blue text for live ticking duration in the table
             durationStr = `<span class="live-duration text-primary fw-bold" data-timestamp="${ts}">
-                Duration ${formatTimeDifference(ts, Date.now())}
+                ${formatTimeDifference(ts, Date.now())}
             </span>`;
         } else {
-            durationStr = `Duration ${durationStr}`;
+            durationStr = `${durationStr}`;
         }
 
         let statusText = log.status ? log.status.trim().toUpperCase() : "UNKNOWN";
