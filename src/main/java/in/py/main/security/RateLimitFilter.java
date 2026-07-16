@@ -18,14 +18,28 @@ public class RateLimitFilter extends OncePerRequestFilter {
         this.loginAttemptService = loginAttemptService;
     }
 
+    // Helper method to extract the REAL IP behind Render's proxy
+    private String getClientIP(HttpServletRequest request) {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (xfHeader == null || xfHeader.isEmpty()) {
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0].trim();
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
-        // Only trigger this check on POST requests to /login
         if (request.getRequestURI().equals("/login") && request.getMethod().equalsIgnoreCase("POST")) {
-            if (loginAttemptService.isBlocked(request.getRemoteAddr())) {
-                // Redirect them with a special 'locked' parameter
+            
+            // Extract the true IP
+            String ip = getClientIP(request);
+            
+            if (loginAttemptService.isBlocked(ip)) {
+                System.out.println("🛡️ BLOCKED request from locked IP: " + ip);
+                
+                // Bounce them to the locked URL
                 response.sendRedirect("/login.html?error=locked");
                 return;
             }
