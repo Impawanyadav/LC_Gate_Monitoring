@@ -18,12 +18,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private final RateLimitFilter rateLimitFilter;
+    //private final RateLimitFilter rateLimitFilter;
 
     // Inject the new filter via constructor
-    public WebSecurityConfig(RateLimitFilter rateLimitFilter) {
-        this.rateLimitFilter = rateLimitFilter;
-    }
+   // public WebSecurityConfig(RateLimitFilter rateLimitFilter) {
+       // this.rateLimitFilter = rateLimitFilter;
+    //}
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -70,8 +70,8 @@ public class WebSecurityConfig {
         .csrf(csrf -> csrf.disable())
         
         // NEW LINE: Add the rate limit filter before Spring processes the login
-        .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+       // .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
         
-        return http.build();
-    }
+      //  return http.build();
+   // }
 }
