@@ -105,8 +105,7 @@ public class GateDataService {
 
                         // 4. Gate-Specific Analytics (Max 2000 per gate)
                         tempAnalytics.computeIfAbsent(gateId, k -> new LinkedList<>()).add(logEntry);
-                        if (tempAnalytics.get(gateId).size() > 2000) {
-                            tempAnalytics.get(gateId).removeFirst();
+                        
                         }
                     }
                 }

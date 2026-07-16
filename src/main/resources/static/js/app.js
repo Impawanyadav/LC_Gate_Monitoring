@@ -86,8 +86,8 @@ function updateDashboard(currentStates, historyLogs) {
 
         let statusText = log.status ? log.status.trim().toUpperCase() : "UNKNOWN";
         
-        // Standard Bootstrap badges for the table
-        let badgeClass = statusText === 'OPEN' ? 'bg-success' : (statusText.includes('CLOSE') ? 'bg-danger' : 'bg-secondary');
+        // UPDATED LOGIC: OPEN is now bg-danger (Red), CLOSE is now bg-success (Green)
+        let badgeClass = statusText === 'OPEN' ? 'bg-danger' : (statusText.includes('CLOSE') ? 'bg-success' : 'bg-secondary');
 
         let row = `<tr>
             <td class="fw-bold">${log.gateId}</td>
