@@ -41,7 +41,7 @@ public class GateDataService {
         fetchAndBroadcastData();
     }
 
-    @Scheduled(fixedRate = 55000)
+    @Scheduled(fixedRate = 40000)
     public void fetchAndBroadcastData() {
         // Global Recent 100 Logs (as requested)
         LinkedList<GateLog> rollingLogs = new LinkedList<>();
